@@ -120,7 +120,7 @@ boolean acDS3231Class::nowDate() {
   return false;
 }
 
-char* acDS3231Class::nowTimeFmt() {
+char* acDS3231Class::nowTimeFmt(char sep) {
 
   volatile char Fmt[10];
   memset(Fmt, 0, 10);
@@ -134,7 +134,7 @@ char* acDS3231Class::nowTimeFmt() {
   }
   p += strlen(ltoa(dateTime.hour, &Fmt[p], 10));
 
-  Fmt[p] = ':';
+  Fmt[p] = sep;
 
   p++;
   if (dateTime.minute < 10) {
@@ -143,7 +143,7 @@ char* acDS3231Class::nowTimeFmt() {
   }
   p += strlen(ltoa(dateTime.minute, &Fmt[p], 10));
 
-  Fmt[p] = ':';
+  Fmt[p] = sep;
 
   p++;
   // memset(&Fmt[p], 0, 4);
@@ -155,7 +155,7 @@ char* acDS3231Class::nowTimeFmt() {
   return Fmt;
 }
 
-char* acDS3231Class::nowDateFmt() {
+char* acDS3231Class::nowDateFmt(char sep) {
 
   volatile char Fmt[10];
   uint8_t p = 4;
@@ -163,14 +163,14 @@ char* acDS3231Class::nowDateFmt() {
   nowDate();
 
   ltoa(dateTime.year + 2000, &Fmt[0], 10);
-  Fmt[p] = '/';
+  Fmt[p] = sep;
   if(dateTime.month < 10) {
     p++;
     Fmt[p] = '0';
   }
   p++;
   p += strlen(ltoa(dateTime.month, &Fmt[p], 10));
-  Fmt[p] = '/';
+  Fmt[p] = sep;
   p++;
   ltoa(dateTime.day, &Fmt[p], 10);
   return Fmt;
