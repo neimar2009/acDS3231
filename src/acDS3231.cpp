@@ -73,7 +73,6 @@ boolean acDS3231Class::now() {
 
   if (nowTime() && nowDate()) return true;
   return false;
-
 }
 
 boolean acDS3231Class::nowTime() {
@@ -120,65 +119,74 @@ boolean acDS3231Class::nowDate() {
   return false;
 }
 
+uint8_t acDS3231Class::dateTimeFmt(uint16_t v, uint8_t& p, char& sep) {
+
+  if (v < 10) {
+    Fmt[p] = '0';
+    p++;
+  }
+  p += strlen(ltoa(v, &Fmt[p], 10));
+  if (sep != 0){
+    Fmt[p] = sep;
+    p++;
+  } else {
+    Fmt[p] = 0;
+  }
+  return p;
+}
+
+void acDS3231Class::dtFmt(uint8_t v) {
+
+  char sep = 0;
+  uint8_t p = 0;
+  dateTimeFmt(v, p, sep);
+}
+
+char* acDS3231Class::strHour() {
+
+  dtFmt(dateTime.hour);
+  return Fmt;
+}
+
+char* acDS3231Class::strMinute() {
+
+  dtFmt(dateTime.minute);
+  return Fmt;
+}
+
+char* acDS3231Class::strSecond() {
+
+  dtFmt(dateTime.second);
+  return Fmt;
+}
+
 char* acDS3231Class::nowTimeFmt(char sep) {
 
-  volatile char Fmt[10];
-  memset(Fmt, 0, 10);
   uint8_t p = 0;
   
   nowTime();
 
-  if (dateTime.hour < 10) {
-    Fmt[p] = '0';
-    p++;
-  }
-  p += strlen(ltoa(dateTime.hour, &Fmt[p], 10));
-
-  Fmt[p] = sep;
-
-  p++;
-  if (dateTime.minute < 10) {
-    Fmt[p] = '0';
-    p++;
-  }
-  p += strlen(ltoa(dateTime.minute, &Fmt[p], 10));
-
-  Fmt[p] = sep;
-
-  p++;
-  // memset(&Fmt[p], 0, 4);
-  if (dateTime.second < 10) {
-    Fmt[p] = '0';
-    p++;
-  }
-  ltoa(dateTime.second, &Fmt[p], 10);
+  p = dateTimeFmt(dateTime.hour,   p, sep);
+  p = dateTimeFmt(dateTime.minute, p, sep);
+  sep = 0;
+  p = dateTimeFmt(dateTime.second, p, sep);
   return Fmt;
 }
 
 char* acDS3231Class::nowDateFmt(char sep) {
 
-  volatile char Fmt[10];
-  uint8_t p = 4;
+  uint8_t p = 0;
 
   nowDate();
 
-  ltoa(dateTime.year + 2000, &Fmt[0], 10);
-  Fmt[p] = sep;
-  if(dateTime.month < 10) {
-    p++;
-    Fmt[p] = '0';
-  }
-  p++;
-  p += strlen(ltoa(dateTime.month, &Fmt[p], 10));
-  Fmt[p] = sep;
-  p++;
-  ltoa(dateTime.day, &Fmt[p], 10);
+  p = dateTimeFmt(dateTime.year + 2000, p, sep);
+  p = dateTimeFmt(dateTime.month, p, sep);
+  sep = 0;
+  p = dateTimeFmt(dateTime.day,   p, sep);
   return Fmt;
 }
 
 char* acDS3231Class::nowWeekDayFmt(uint8_t cod = 1) {
-
-  volatile char Fmt[3];
 
   switch (cod) {
     case 55 : cod = 1;

@@ -16,6 +16,9 @@ public:
   boolean nowTime();
   boolean nowWeekDay();
   boolean nowDate();
+  char* strHour();
+  char* strMinute();
+  char* strSecond();
   char* nowTimeFmt(char sep = '-');
   char* nowWeekDayFmt(uint8_t cod = 1);
   char* nowDateFmt(char sep = '-');
@@ -36,5 +39,7 @@ private:
   struct {
     uint8_t second = 0, minute = 0, hour = 0, weekDay = 0, day = 0, month = 0, year = 0;
   } dateTime;
-  // char Fmt[10];
+  char Fmt[10];
+  uint8_t dateTimeFmt(uint16_t v, uint8_t& p, char& sep);
+  void dtFmt(uint8_t v);
 };
